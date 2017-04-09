@@ -1,31 +1,57 @@
 import React from 'react';
+import ReactDOM from 'react-dom'
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
       txt: 'this is the prop text',
-      cat: 0
+      cat: 0,
+      currentEvent: '---',
+      a: '',
+      b: ''
     }
   }
-  //update name is function
+  //start function
   update(e) {
     this.setState({ txt: e.target.value })
   }
+  change(e) {
+    //return event textArea
+    this.setState({ currentEvent: e.type })
+  }
+  updateChange() {    
+    this.setState({
+      a: this.a.refs.input.value,
+      b: this.b.refs.input.value
+    })
+  }
+  //end function
   render() {
     return (<div>
         <h1>{this.state.txt} - {this.state.cat}</h1>
         <Widget update={this.update.bind(this)} />
         <button>I <Heart /> React</button>
         <Title text="12345678"/>
+        <textarea onKeyPress={this.change.bind(this)} onDoubleClick={this.change.bind(this)} onBlur={this.change.bind(this)} onFocus={this.change.bind(this)}  cols="30" rows="10" />
+        <h1>{this.state.currentEvent}</h1>
+
+        {/*data Bind*/}
+        <Input  ref={ component => this.a = component } updateChange={ this.updateChange.bind(this) } /> { this.state.a }
+        <Input  ref={ component => this.b = component } updateChange={ this.updateChange.bind(this) }/> { this.state.b }
     </div>)
+  }
+}
+
+class Input extends React.Component {
+  render() {
+    return <div><input ref="input" type="text" onChange={this.props.updateChange} /></div>
   }
 }
 
 const Widget = (props) => 
   <input type="text" onChange={props.update} />
 
-// const Button = (props) => <button>{props.children}</button>
 
 class Heart extends React.Component {
   render() {
