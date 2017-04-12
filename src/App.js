@@ -28,7 +28,7 @@ class App extends React.Component {
     })
   }
   componentWillMount() {
-    fetch('http://swapi.co/api/people/?format=json')
+    fetch('https://swapi.co/api/people/?format=json')
     .then( response => response.json() )
     .then( ({results: items}) => this.setState({items}) )
   }
