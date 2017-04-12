@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom'
+// import ReactDOM from 'react-dom'
 
 class App extends React.Component {
   constructor() {
@@ -9,7 +9,8 @@ class App extends React.Component {
       cat: 0,
       currentEvent: '---',
       a: '',
-      b: ''
+      b: '',
+      items: []
     }
   }
   //start function
@@ -26,8 +27,22 @@ class App extends React.Component {
       b: this.b.refs.input.value
     })
   }
+  componentWillMount() {
+    fetch('http://swapi.co/api/people/?format=json')
+    .then( response => response.json() )
+    .then( ({results: items}) => this.setState({items}) )
+  }
+  filter(e) {
+    this.setState({filter: e.target.value})
+  }
   //end function
   render() {
+    let items = this.state.items;
+    if(this.state.filter) {
+      items = items.filter( item => item.name.toLowerCase()
+      .includes(this.state.filter.toLowerCase()))
+    }
+
     return (<div>
         <h1>{this.state.txt} - {this.state.cat}</h1>
         <Widget update={this.update.bind(this)} />
@@ -39,6 +54,11 @@ class App extends React.Component {
         {/*data Bind*/}
         <Input  ref={ component => this.a = component } updateChange={ this.updateChange.bind(this) } /> { this.state.a }
         <Input  ref={ component => this.b = component } updateChange={ this.updateChange.bind(this) }/> { this.state.b }
+
+         <h2>Filter in array</h2>
+        <input type="text" onChange={this.filter.bind(this)} />
+        { items.map( item => 
+           <Person key={item.name} person={item} />)}
     </div>)
   }
 }
@@ -71,5 +91,7 @@ Title.propTypes = {
     }
   }
 }
+
+const  Person = (props) => <h4>{props.person.name}</h4>
 
 export default App
